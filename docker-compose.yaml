@@ -1,0 +1,18 @@
+services:
+  server:
+    build: 
+      dockerfile: Dockerfile
+      context: .
+    ports:
+      - "8000:8000"
+    environment:
+      - DATABASE_URL=postgresql://user:MyStrongPassword@database:5432/coffee
+    depends_on:
+      - database
+  database:
+    image: postgres:16-alpine3.20
+    environment:
+      - POSTGRES_PASSWORD=MyStrongPassword
+      - POSTGRES_USER=user
+      - POSTGRES_DB=coffee
+    

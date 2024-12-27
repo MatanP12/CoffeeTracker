@@ -1,11 +1,10 @@
-from .CoffeeModel import Coffee, CoffeeView, SQLModel
+from .CoffeeModel import Coffee,CoffeeCreate, CoffeeView, SQLModel
 from sqlmodel import create_engine
-
-sqllite_db_name = "coffee.db"
-sqlite_url = f"sqlite:///{sqllite_db_name}"
+import os
+sqlite_url = os.environ.get("DATABASE_URL","sqlite:///coffee.db") 
 
 engine = create_engine(sqlite_url, echo=True)
 
 SQLModel.metadata.create_all(engine)
 
-__all__ = ["engine", "Coffe", "CoffeeView"]
+__all__ = ["engine", "Coffee", "CoffeeView"]
