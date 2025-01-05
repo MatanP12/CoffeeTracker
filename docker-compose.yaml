@@ -9,6 +9,10 @@ services:
       - DATABASE_URL=postgresql://user:MyStrongPassword@database:5432/coffee
     depends_on:
       - database
+    develop:
+      watch:
+        - path: ./src
+          action: rebuild
   database:
     image: postgres:16-alpine3.20
     environment:

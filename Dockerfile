@@ -4,7 +4,6 @@ WORKDIR /app
 COPY reqirements.txt .
 RUN pip install --no-cache-dir -r reqirements.txt
 
-COPY main.py .
 COPY src ./src
 
-ENTRYPOINT [ "fastapi","run"]
+ENTRYPOINT [ "fastapi","run","src"]
