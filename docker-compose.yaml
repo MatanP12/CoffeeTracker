@@ -1,12 +1,23 @@
 services:
+  frontend:
+    image: nginx
+    container_name: frontend
+    ports:
+      - "80:80"
+    volumes:
+      - ./nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+      - ./src/static:/usr/share/nginx/html:ro
+
+  
   server:
     build: 
       dockerfile: Dockerfile
       context: .
-    ports:
-      - "8000:8000"
+    container_name: coffee_follower
+    # ports:
+    #   - "8000:8000"
     environment:
-      - DATABASE_URL=postgresql://user:MyStrongPassword@database:5432/coffee
+      - DATABASE_CONNECTION_STRING=postgresql://user:MyStrongPassword@database:5432/coffee
     depends_on:
       - database
     develop:
@@ -15,6 +26,7 @@ services:
           action: rebuild
   database:
     image: postgres:16-alpine3.20
+    container_name: database
     environment:
       - POSTGRES_PASSWORD=MyStrongPassword
       - POSTGRES_USER=user

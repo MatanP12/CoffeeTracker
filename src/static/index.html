@@ -1,0 +1,281 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Coffee Manager</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #0D1117;
+            color: #C9D1D9;
+        }
+        .container {
+            max-width: 800px;
+            margin: 50px auto;
+            padding: 20px;
+            background: #161B22;
+            border-radius: 15px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.5);
+        }
+        h1 {
+            text-align: center;
+            color: #58A6FF;
+            font-weight: 600;
+        }
+        ul {
+            list-style-type: none;
+            padding: 0;
+        }
+        li {
+            padding: 15px;
+            margin-bottom: 10px;
+            background-color: #21262D;
+            border-radius: 8px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        li:hover {
+            background-color: #30363D;
+        }
+        .upper-menu {
+            margin-bottom: 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 15px;
+        }
+        .form {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            background-color: #21262D;
+            padding: 10px;
+            border-radius: 8px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2);
+        }
+        .form select {
+            padding: 10px;
+            border: 1px solid #30363D;
+            border-radius: 5px;
+            background-color: #161B22;
+            color: #C9D1D9;
+            font-size: 14px;
+        }
+        .form button {
+            padding: 10px 20px;
+            background-color: #238636;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            font-size: 14px;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .form button:hover {
+            background-color: #2EA043;
+        }
+        .filter select {
+            padding: 8px;
+            font-size: 12px;
+            border: 1px solid #30363D;
+            border-radius: 5px;
+            background-color: #161B22;
+            color: #C9D1D9;
+        }
+        .edit-form {
+            display: none;
+            flex-direction: row;
+            gap: 10px;
+            align-items: center;
+        }
+        .edit-form select, .edit-form button {
+            padding: 12px;
+            border: 1px solid #30363D;
+            border-radius: 5px;
+            background-color: #161B22;
+            color: #C9D1D9;
+        }
+        .edit-form button {
+            background-color: #8250DF;
+            color: #ffffff;
+            transition: all 0.3s ease;
+        }
+        .edit-form button:hover {
+            background-color: #B084F4;
+        }
+        button {
+            padding: 12px;
+            border: none;
+            border-radius: 5px;
+            background-color: #238636;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        button:hover {
+            background-color: #2EA043;
+        }
+        .close-btn {
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #FFB84C;
+            color: #ffffff;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
+        }
+        .close-btn:hover {
+            background-color: #FFA733;
+        }
+        .coffee-type {
+            font-weight: 500;
+            color: #F0F6FC;
+        }
+        .coffee-timestamp {
+            font-size: 12px;
+            color: #8B949E;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Coffee Manager</h1>
+        <div class="upper-menu">
+            <div class="form">
+                <select id="coffeeType">
+                    <option value="Espresso">Espresso</option>
+                    <option value="Americano">Americano</option>
+                    <option value="Latte">Latte</option>
+                    <option value="Cappuccino">Cappuccino</option>
+                    <option value="Mocha">Mocha</option>
+                    <option value="Macchiato">Macchiato</option>
+                    <option value="Flat White">Flat White</option>
+                    <option value="Ristretto">Ristretto</option>
+                    <option value="Cortado">Cortado</option>
+                    <option value="Long Black">Long Black</option>
+                    <option value="Affogato">Affogato</option>
+                </select>
+                <button onclick="createCoffee()">Add Coffee</button>
+            </div>
+            <div class="filter">
+                <select id="filterType" onchange="filterCoffees()">
+                    <option value="">All</option>
+                    <option value="Espresso">Espresso</option>
+                    <option value="Americano">Americano</option>
+                    <option value="Latte">Latte</option>
+                    <option value="Cappuccino">Cappuccino</option>
+                    <option value="Mocha">Mocha</option>
+                    <option value="Macchiato">Macchiato</option>
+                    <option value="Flat White">Flat White</option>
+                    <option value="Ristretto">Ristretto</option>
+                    <option value="Cortado">Cortado</option>
+                    <option value="Long Black">Long Black</option>
+                    <option value="Affogato">Affogato</option>
+                </select>
+            </div>
+        </div>
+        <ul id="coffeeList"></ul>
+    </div>
+
+    <script>
+        const apiUrl = window.location.origin + '/coffee';
+        let allCoffees = [];
+
+        async function fetchCoffees() {
+            const response = await fetch(apiUrl);
+            allCoffees = await response.json();
+            allCoffees.sort((a, b) => new Date(b.creation_time) - new Date(a.creation_time));
+            renderCoffeeList(allCoffees);
+        }
+
+        function renderCoffeeList(coffees) {
+            const coffeeList = document.getElementById('coffeeList');
+            coffeeList.innerHTML = '';
+
+            coffees.forEach(coffee => {
+                const li = document.createElement('li');
+                li.innerHTML = `
+                    <div>
+                        <span class="coffee-type">${coffee.type}</span>
+                        <div class="coffee-timestamp">Created: ${new Date(coffee.creation_time).toLocaleString()}</div>
+                    </div>
+                    <div id="buttons-${coffee.id}">
+                        <button onclick="showEditForm('${coffee.id}')">Edit</button>
+                    </div>
+                    <form class="edit-form" id="edit-form-${coffee.id}" onsubmit="updateCoffee(event, '${coffee.id}')">
+                        <select id="edit-type-${coffee.id}">
+                            <option value="Espresso" ${coffee.type === 'Espresso' ? 'selected' : ''}>Espresso</option>
+                            <option value="Americano" ${coffee.type === 'Americano' ? 'selected' : ''}>Americano</option>
+                            <option value="Latte" ${coffee.type === 'Latte' ? 'selected' : ''}>Latte</option>
+                            <option value="Cappuccino" ${coffee.type === 'Cappuccino' ? 'selected' : ''}>Cappuccino</option>
+                            <option value="Mocha" ${coffee.type === 'Mocha' ? 'selected' : ''}>Mocha</option>
+                            <option value="Macchiato" ${coffee.type === 'Macchiato' ? 'selected' : ''}>Macchiato</option>
+                            <option value="Flat White" ${coffee.type === 'Flat White' ? 'selected' : ''}>Flat White</option>
+                            <option value="Ristretto" ${coffee.type === 'Ristretto' ? 'selected' : ''}>Ristretto</option>
+                            <option value="Cortado" ${coffee.type === 'Cortado' ? 'selected' : ''}>Cortado</option>
+                            <option value="Long Black" ${coffee.type === 'Long Black' ? 'selected' : ''}>Long Black</option>
+                            <option value="Affogato" ${coffee.type === 'Affogato' ? 'selected' : ''}>Affogato</option>
+                        </select>
+                        <button type="submit">Save</button>
+                        <button type="button" class="close-btn" onclick="hideEditForm('${coffee.id}')">X</button>
+                    </form>
+                `;
+                coffeeList.appendChild(li);
+            });
+        }
+
+        function showEditForm(id) {
+            const editForm = document.getElementById(`edit-form-${id}`);
+            const buttons = document.getElementById(`buttons-${id}`);
+            editForm.style.display = 'flex';
+            buttons.style.display = 'none';
+        }
+
+        function hideEditForm(id) {
+            const editForm = document.getElementById(`edit-form-${id}`);
+            const buttons = document.getElementById(`buttons-${id}`);
+            editForm.style.display = 'none';
+            buttons.style.display = 'flex';
+        }
+
+        async function createCoffee() {
+            const coffeeType = document.getElementById('coffeeType').value;
+            const creationTime = new Date().toISOString();
+            if (!coffeeType) return alert('Please select a coffee type');
+
+            await fetch(apiUrl, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: coffeeType, creation_time: creationTime })
+            });
+
+            fetchCoffees();
+        }
+
+        function filterCoffees() {
+            const filterType = document.getElementById('filterType').value;
+            const filteredCoffees = filterType ? allCoffees.filter(coffee => coffee.type === filterType) : allCoffees;
+            renderCoffeeList(filteredCoffees);
+        }
+
+        async function updateCoffee(event, id) {
+            event.preventDefault();
+            const newType = document.getElementById(`edit-type-${id}`).value;
+
+            await fetch(`${apiUrl}/${id}`, {
+                method: 'PUT',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ type: newType })
+            });
+
+            fetchCoffees();
+        }
+
+        fetchCoffees();
+    </script>
+</body>
+</html>

@@ -1,9 +1,10 @@
 from sqlmodel import Field, SQLModel
 from datetime import datetime
+from .CoffeeType import CoffeeType
 
 class CoffeBaseModel(SQLModel):
-    type: str
-    creation_time : datetime = datetime.now()
+    type: CoffeeType
+    creation_time : datetime
 
 class Coffee(CoffeBaseModel, table=True):
     id: int | None = Field(default=None,primary_key=True)
@@ -15,5 +16,5 @@ class CoffeeCreate(CoffeBaseModel):
     pass
 
 class CoffeeUpdate(CoffeBaseModel):
-    type: str | None = None
+    type: CoffeeType | None = None
     creation_time: datetime | None = None

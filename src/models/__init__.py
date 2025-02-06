@@ -1,8 +1,8 @@
 from .CoffeeModel import Coffee,CoffeeCreate, CoffeeView, CoffeeUpdate ,SQLModel
 from sqlmodel import create_engine
 import os
-sqlite_url = os.environ.get("DATABASE_URL","sqlite:///coffee.db") 
+sql_connection_string = os.environ.get("DATABASE_CONNECTION_STRING","sqlite:///coffee.db") 
 
-engine = create_engine(sqlite_url, echo=True)
+engine = create_engine(sql_connection_string, echo=True)
 
 SQLModel.metadata.create_all(engine)
