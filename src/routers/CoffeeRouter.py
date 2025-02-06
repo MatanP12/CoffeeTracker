@@ -2,14 +2,14 @@ from fastapi import APIRouter, HTTPException
 from src.models import Coffee, CoffeeCreate, CoffeeUpdate, CoffeeView,engine
 from sqlmodel import Session, select
 import logging
+from pythonjsonlogger.json import JsonFormatter
 
 router = APIRouter(prefix="/coffee")
 
 # Create a logger for coffee creation
 coffee_logger = logging.getLogger("coffee_creation")
 coffee_logger.setLevel(logging.INFO)
-coffee_handler = logging.FileHandler("logs/coffee_creation.log")  # Log file for coffee creation
-coffee_handler.setFormatter(logging.Formatter('%(message)s'))
+coffee_handler= logging.StreamHandler()
 coffee_logger.addHandler(coffee_handler)
 
 @router.get(path="/", response_model=list[CoffeeView])
@@ -28,7 +28,7 @@ async def create_coffee(coffee: CoffeeCreate):
         session.add(new_coffee)
         session.commit()
         session.refresh(new_coffee)
-        coffee_logger.info(f"[{new_coffee.type.value}] [{new_coffee.creation_time.date().strftime('%d-%m-%Y')}] [{new_coffee.creation_time.time().strftime('%H:%M')}]")
+        coffee_logger.info(f"{new_coffee.type.value}")
         logging.info(f'Created new coffee with ID: {new_coffee.id}')
         return new_coffee
 

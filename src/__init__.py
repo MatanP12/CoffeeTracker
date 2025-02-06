@@ -3,17 +3,23 @@ from pathlib import Path
 from fastapi import FastAPI
 from fastapi.responses import HTMLResponse
 import logging
+from pythonjsonlogger.json import JsonFormatter
+
+json_formater = JsonFormatter('%(levelname)s : %(name)s : %(message)s : %(asctime)s', datefmt="%d-%m-%Y %H:%M:%S")
+
+file_handler = logging.FileHandler("logs/app.log")
+stream_handler = logging.StreamHandler()
+file_handler.setFormatter(json_formater)
+stream_handler.setFormatter(json_formater)
 
 logging.basicConfig(
     level=logging.INFO,  # Set the logging level
     format='%(asctime)s - %(levelname)s - %(message)s',  # Log format
     handlers=[
-        logging.FileHandler("logs/app.log"),  # General application logs
-        logging.StreamHandler()  # Output to console
+        file_handler,
+        stream_handler
     ]
 )
-
-
 
 app = FastAPI()
 
