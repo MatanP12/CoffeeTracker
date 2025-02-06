@@ -1,6 +1,6 @@
-from enum import StrEnum
+from enum import Enum
 
-class CoffeeType(StrEnum):
+class CoffeeType(Enum):
     ESPRESSO = "Espresso"
     AMERICANO = "Americano"
     LATTE = "Latte"

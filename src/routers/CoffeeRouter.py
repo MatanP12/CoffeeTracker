@@ -28,7 +28,7 @@ async def create_coffee(coffee: CoffeeCreate):
         session.add(new_coffee)
         session.commit()
         session.refresh(new_coffee)
-        coffee_logger.info(f'[{new_coffee.type}] [{new_coffee.creation_time.date().strftime('%d-%m-%Y')}] [{new_coffee.creation_time.time().strftime('%H:%M')}] ')
+        coffee_logger.info(f"[{new_coffee.type.value}] [{new_coffee.creation_time.date().strftime('%d-%m-%Y')}] [{new_coffee.creation_time.time().strftime('%H:%M')}]")
         logging.info(f'Created new coffee with ID: {new_coffee.id}')
         return new_coffee
 
