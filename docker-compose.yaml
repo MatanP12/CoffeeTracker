@@ -14,8 +14,6 @@ services:
       dockerfile: Dockerfile
       context: .
     container_name: coffee_follower
-    # ports:
-    #   - "8000:8000"
     environment:
       - DATABASE_CONNECTION_STRING=postgresql://user:MyStrongPassword@database:5432/coffee
     depends_on:
@@ -24,6 +22,8 @@ services:
       watch:
         - path: ./src
           action: rebuild
+    volumes:
+      - ./logs:/app/logs
   database:
     image: postgres:16-alpine3.20
     container_name: database
@@ -31,4 +31,3 @@ services:
       - POSTGRES_PASSWORD=MyStrongPassword
       - POSTGRES_USER=user
       - POSTGRES_DB=coffee
-    
