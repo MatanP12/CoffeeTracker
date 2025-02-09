@@ -5,7 +5,7 @@ pipeline {
         stage('Checkout') {
             steps {
                 // git branch: 'main', url: 'https://github.com/your-repo.git'
-                sh 'echo Building project...'
+                sh 'docker compose build'
             }
         }
 
@@ -32,6 +32,9 @@ pipeline {
     }
 
     post {
+        always {
+            cleanWs()
+        }
         success {
             echo 'Pipeline succeeded!'
         }
