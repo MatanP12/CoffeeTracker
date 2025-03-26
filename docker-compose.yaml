@@ -25,7 +25,7 @@ services:
         - path: ./src
           action: rebuild
     volumes:
-      - ./logs:/app/logs
+      - logs:/app/logs
 
   database:
     image: postgres:16-alpine3.20
@@ -48,7 +48,7 @@ services:
     ports:
       - 9080:9080
     volumes:
-      - ./logs:/var/log:ro
+      - logs:/var/log:ro
       - ./promtail/promtail-config.yaml:/mnt/config/promtail-config.yaml:ro
     command:
       - --config.file=/mnt/config/promtail-config.yaml
@@ -58,12 +58,12 @@ services:
     container_name: loki
     ports:
       - 3100:3100
-    # volumes:
-    #   - ./loki/loki-config.yaml:/mnt/config/loki-config.yaml:ro
-    # command: --config.file=/mnt/config/loki-config.yaml
-
+      
   grafana:
     image: grafana/grafana:11.5.1
     container_name: grafana
     ports:
       - 3000:3000
+
+volumes:
+  logs:
